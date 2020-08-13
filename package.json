@@ -1,0 +1,46 @@
+{
+  "name": "diploma_ajs",
+  "version": "1.0.0",
+  "description": "diploma ajs",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "buildbabel": "babel src -d dist",
+    "lint": "eslint .",
+    "test": "jest --coverage",
+    "start:dev": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiRover/js-advanced-diploma.git"
+  },
+  "keywords": [
+    "diploma",
+    "ajs"
+  ],
+  "author": "Dmitriy Rovenskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DiRover/js-advanced-diploma/issues"
+  },
+  "homepage": "https://github.com/DiRover/js-advanced-diploma#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "babel-jest": "^26.3.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.1",
+    "html-loader": "^1.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.4.0",
+    "mini-css-extract-plugin": "^0.10.0",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5"
+  }
+}
