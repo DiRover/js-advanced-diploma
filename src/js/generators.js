@@ -10,7 +10,7 @@ import Character from './Character';
 
 //создаю классы персонажей
 
-class Bowman extends Character{
+export class Bowman extends Character{
   constructor(level = 1, type = 'Bowman') {
     super(level, type);
     this.attack = 25;
@@ -18,7 +18,7 @@ class Bowman extends Character{
   }
 };
 
-class Swordsman extends Character{
+export class Swordsman extends Character{
   constructor(level = 1, type = 'Swordsman') {
     super(level, type);
     this.attack = 40;
@@ -26,7 +26,7 @@ class Swordsman extends Character{
   }
 };
 
-class Magician extends Character{
+export class Magician extends Character{
   constructor(level = 1, type = 'Magician') {
     super(level, type);
     this.attack = 10;
@@ -34,7 +34,7 @@ class Magician extends Character{
   }
 };
 
-class Vampire extends Character{
+export class Vampire extends Character{
   constructor(level = 1, type = 'Vampire') {
     super(level, type);
     this.attack = 25;
@@ -42,7 +42,7 @@ class Vampire extends Character{
   }
 };
 
-class Undead extends Character{
+export class Undead extends Character{
   constructor(level = 1, type = 'Undead') {
     super(level, type);
     this.attack = 40;
@@ -50,7 +50,7 @@ class Undead extends Character{
   }
 };
 
-class Daemon extends Character{
+export class Daemon extends Character{
   constructor(level = 1, type = 'Daemon') {
     super(level, type);
     this.attack = 10;
@@ -58,29 +58,23 @@ class Daemon extends Character{
   }
 };
 
-const allowedTypes = [Bowman, Swordsman, Magician, Vampire, Undead, Daemon];
-
+export const allowedTypes = [Bowman, Swordsman, Magician, Vampire, Undead, Daemon];
 
 export function* characterGenerator(allowedTypes, maxLevel) {
-  // TODO: write logic here
-  for (const char of allowedTypes) { //создаю персонажей для первого уровня
-    if (maxLevel === 1 && char !== Magician) {
-      const member = new char;
-      yield member;
-    } else { //создаю персонажей для следующих уровней
-      if (char === Vampire || char === Undead || char === Daemon) {
-        const level = Math.floor(Math.random() * Math.floor(maxLevel)) + 1; //рандомный уровень для 
-        const member = new char(level); //персонажей компьютера
-        member.health = 100;
-        yield member;
-      }
-    }
+    // TODO: write logic here
+  for (let i = 0; i < allowedTypes.length; i++) {
+    const memberIndex = Math.floor(Math.random() * Math.floor(allowedTypes.length - 1)) + 1;
+    const level = Math.floor(Math.random() * Math.floor(maxLevel)) + 1;
+    const member = new allowedTypes[memberIndex](level);
+    yield member
   }
 }
 
 export function generateTeam(allowedTypes, maxLevel, characterCount) {
   // TODO: write logic here
-  for (let i = 0; i < characterCount; i++) { //генерирую заданное кол-во персонажей
-    return characterGenerator(allowedTypes, maxLevel).next().value; //получаю конкретного персонажа
+  const team = [];
+  for (let i = 0; i < characterCount; i++) { 
+    team.push(characterGenerator(allowedTypes, maxLevel).next().value); 
   }
+  return team;
 }
