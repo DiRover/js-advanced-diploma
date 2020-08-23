@@ -13,6 +13,11 @@ export default class GameController {
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
+    this.userTeam = [];
+    this.compTeam = [];
+    this.userCoordinates = [];
+    this.compCoordinates = [];
+
   }
 
   init() {
@@ -21,45 +26,71 @@ export default class GameController {
     this.gamePlay.drawUi(themes.prairie);
     characterGenerator(); //генерация персонажей
     generateTeam(allowedTypes, 1, 2); //генерация команды
-    const user = generateTeam([Bowman, Swordsman], 1, 2);
-    //console.log(user)
-    const comp = generateTeam([Vampire, Undead, Daemon], 1, 2);
-    const userTeam = [];
-    const compTeam = [];
-    for (const char of user) {
-      const userCoordinates = [0, 1, 8, 9, 16, 17, 24, 25, 32, 33, 40, 41, 48, 49, 56, 57];
-      if (userTeam[0]) { //исключаем координату первого перса
-        userCoordinates.map((item) => {
-          item !== userTeam[0].position;
-        })
+    const user = generateTeam([Bowman, Swordsman], 1, 2); //генерируем команду юзера
+    const comp = generateTeam([Vampire, Undead, Daemon], 1, 2); //генерируем команду компа
+    //создаём массив с начальными координатами для старта игры
+    for (let i = 0; i < this.gamePlay.boardSize ** 2; i++) {
+      if (i % this.gamePlay.boardSize === 0) {
+        this.userCoordinates.push(i);
+      } else if (((i - 1) % this.gamePlay.boardSize) === 0) {
+        this.userCoordinates.push(i);
+      } else if ((i + 1) % this.gamePlay.boardSize === 0) {
+        this.compCoordinates.push(i);
+      } else if ((i + 2) % this.gamePlay.boardSize === 0) {
+        this.compCoordinates.push(i);
       }
-      const coordinate = randomNumber(0, (userCoordinates.length - 1));
-      userTeam.push(new PositionedCharacter(char, userCoordinates[coordinate]));
     }
-    for (const char of comp) {
-      const compCoordinates = [6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63];
-      if (compTeam[0]) { //исключаем координату первого перса
-        compCoordinates.map((item) => {
-          item !== compTeam[0].position;
+    //отрисовываем команду юзера
+    for (const char of user) {
+      let indexCoordinate = randomNumber (0, (this.userCoordinates.length - 1));
+      if (this.userTeam[0]) { //исключаем создание персов в 1-ой ячейке
+        const arr = this.userCoordinates.filter((item) => {
+          return item !== this.userTeam[0].position
         });
-      }  
-      const coordinate = randomNumber(0, (compCoordinates.length - 1));
-      compTeam.push(new PositionedCharacter(char, compCoordinates[coordinate]));
+        indexCoordinate = randomNumber (0, (arr.length - 1));
+        this.userTeam.push(new PositionedCharacter(char, arr[indexCoordinate]));
+      } else {
+        let firstCoordinate = this.userCoordinates[indexCoordinate];
+        this.userTeam.push(new PositionedCharacter(char, firstCoordinate));
+      } 
     }
-    
-    this.gamePlay.redrawPositions([...userTeam, ...compTeam]);
-
+    //отрисовываем команду компа
+    for (const char of comp) {
+      let indexCoordinate = randomNumber (0, (this.compCoordinates.length - 1));
+      if (this.compTeam[0]) { //исключаем создание персов в 1-ой ячейке
+        const arr = this.compCoordinates.filter((item) => {
+          return item !== this.compTeam[0].position
+        });
+        indexCoordinate = randomNumber (0, (arr.length - 1));
+        this.compTeam.push(new PositionedCharacter(char, arr[indexCoordinate]));
+      } else {
+        let firstCoordinate = this.compCoordinates[indexCoordinate];
+        this.compTeam.push(new PositionedCharacter(char, firstCoordinate));
+      } 
+    }
+    this.gamePlay.redrawPositions([...this.userTeam, ...this.compTeam]);
+    //this.onCellEnter();
+    this.gamePlay.addCellEnterListener(this.onCellEnter.bind(this));
+    this.gamePlay.addCellLeaveListener(this.onCellClick.bind(this));
+    this.gamePlay.addCellClickListener(this.onCellEnter.bind(this));
   }
 
   onCellClick(index) {
     // TODO: react to click
+    console.log(index)
+
   }
 
   onCellEnter(index) {
     // TODO: react to mouse enter
+    //let message = 'U+1F396'
+    console.log(index)
+    this.gamePlay.showCellTooltip();
   }
 
   onCellLeave(index) {
     // TODO: react to mouse leave
+    console.log(index)
+    
   }
 }
